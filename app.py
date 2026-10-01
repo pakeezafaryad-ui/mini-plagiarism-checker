@@ -15,6 +15,7 @@ st.write("Compare two pieces of text and check whether they are similar.")
 
 @st.cache_resource
 def load_model():
+
     hf_token = st.secrets["HF_TOKEN"] if "HF_TOKEN" in st.secrets else None
 
     tokenizer = AutoTokenizer.from_pretrained(
@@ -49,6 +50,7 @@ def predict(text1, text2, tokenizer, model, device):
     ).to(device)
 
     with torch.no_grad():
+
         output = model.generate(
             **inputs,
             max_new_tokens=8
@@ -59,9 +61,8 @@ def predict(text1, text2, tokenizer, model, device):
         skip_special_tokens=True
     ).strip().lower()
 
-    # Check non-duplicate FIRST because "non-duplicate"
-    # also contains the word "duplicate"
-    if "non-duplicate" in result:
+    # Model's actual labels
+    if "not duplicate" in result:
         return "Not similar"
 
     elif "duplicate" in result:
