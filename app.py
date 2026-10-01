@@ -62,14 +62,16 @@ def predict(text1, text2, tokenizer, model, device):
     ).strip().lower()
 
     # Model's actual labels
-    if "not duplicate" in result:
-        return "Not similar"
+   st.write("Debug - Model output:", result)
 
-    elif "duplicate" in result:
-        return "Similar text detected"
+if "not duplicate" in result:
+    return "Not similar"
 
-    else:
-        return f"Model output: {result}"
+elif "duplicate" in result:
+    return "Similar text detected"
+
+else:
+    return f"Model output: {result}"
 
 
 text1 = st.text_area(
