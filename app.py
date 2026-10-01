@@ -61,14 +61,14 @@ def predict(text1, text2, tokenizer, model, device):
         skip_special_tokens=True
     ).strip().lower()
 
-    # Debug: show the model's actual output
+    # Show the model's raw output for debugging
     st.write("Debug - Model output:", result)
 
     # Model's actual labels
-    if "not duplicate" in result:
+    if result == "not_duplicate":
         return "Not similar"
 
-    elif "duplicate" in result:
+    elif result == "duplicate":
         return "Similar text detected"
 
     else:
