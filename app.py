@@ -15,7 +15,6 @@ st.write("Compare two pieces of text and check whether they are similar.")
 
 @st.cache_resource
 def load_model():
-    # Get Hugging Face token from Streamlit Secrets
     hf_token = st.secrets["HF_TOKEN"] if "HF_TOKEN" in st.secrets else None
 
     tokenizer = AutoTokenizer.from_pretrained(
@@ -60,11 +59,12 @@ def predict(text1, text2, tokenizer, model, device):
         skip_special_tokens=True
     ).strip().lower()
 
-    # Check the model's output
-    if "not similar" in result:
+    # Check non-duplicate FIRST because "non-duplicate"
+    # also contains the word "duplicate"
+    if "non-duplicate" in result:
         return "Not similar"
 
-    elif "similar" in result:
+    elif "duplicate" in result:
         return "Similar text detected"
 
     else:
