@@ -54,14 +54,14 @@ def predict(text1, text2, tokenizer, model, device):
         output[0],
         skip_special_tokens=True
     ).strip().lower()
+if "not similar" in result:
+    return "Not similar"
 
-    if "not similar" in result:
-        return "Not similar"
+elif "similar" in result:
+    return "Similar text detected"
 
-    if "similar" in result:
-        return "Similar text detected"
-
-    return "Model output unclear"
+else:
+    return f"Model output: {result}"
 
 
 text1 = st.text_area(
@@ -87,13 +87,14 @@ if st.button("🔍 Check Similarity"):
                 model,
                 device
             )
+if "not similar" in result:
+    return "Not similar"
 
-        if result == "Similar text detected":
-            st.warning("⚠️ Similar text detected")
-        elif result == "Not similar":
-            st.success("✅ Not similar")
-        else:
-            st.info("ℹ️ Model output was unclear.")
+elif "similar" in result:
+    return "Similar text detected"
+
+else:
+    return f"Model output: {result}"
 
 st.caption(
     "This tool detects text similarity; it does not by itself prove plagiarism."
