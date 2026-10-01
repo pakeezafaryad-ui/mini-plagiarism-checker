@@ -12,6 +12,7 @@ st.set_page_config(
 st.title("🔎 Mini Plagiarism Checker")
 st.write("Compare two pieces of text and check whether they are similar.")
 
+
 @st.cache_resource
 def load_model():
     # Get Hugging Face token from Streamlit Secrets
@@ -27,7 +28,10 @@ def load_model():
         token=hf_token
     )
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device(
+        "cuda" if torch.cuda.is_available() else "cpu"
+    )
+
     model.to(device)
     model.eval()
 
@@ -35,6 +39,7 @@ def load_model():
 
 
 def predict(text1, text2, tokenizer, model, device):
+
     input_text = f"sentence1: {text1} sentence2: {text2}"
 
     inputs = tokenizer(
@@ -54,14 +59,16 @@ def predict(text1, text2, tokenizer, model, device):
         output[0],
         skip_special_tokens=True
     ).strip().lower()
-if "not similar" in result:
-    return "Not similar"
 
-elif "similar" in result:
-    return "Similar text detected"
+    # Check the model's output
+    if "not similar" in result:
+        return "Not similar"
 
-else:
-    return f"Model output: {result}"
+    elif "similar" in result:
+        return "Similar text detected"
+
+    else:
+        return f"Model output: {result}"
 
 
 text1 = st.text_area(
@@ -74,12 +81,19 @@ text2 = st.text_area(
     height=150
 )
 
+
 if st.button("🔍 Check Similarity"):
+
     if not text1.strip() or not text2.strip():
+
         st.warning("Please enter both texts.")
+
     else:
+
         with st.spinner("Checking similarity..."):
+
             tokenizer, model, device = load_model()
+
             result = predict(
                 text1,
                 text2,
@@ -87,14 +101,19 @@ if st.button("🔍 Check Similarity"):
                 model,
                 device
             )
-if "not similar" in result:
-    return "Not similar"
 
-elif "similar" in result:
-    return "Similar text detected"
+        if result == "Similar text detected":
 
-else:
-    return f"Model output: {result}"
+            st.warning("⚠️ Similar text detected")
+
+        elif result == "Not similar":
+
+            st.success("✅ Not similar")
+
+        else:
+
+            st.info(f"ℹ️ {result}")
+
 
 st.caption(
     "This tool detects text similarity; it does not by itself prove plagiarism."
